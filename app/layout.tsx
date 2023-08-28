@@ -3,6 +3,7 @@ import './globals.css';
 import { Analytics } from '@vercel/analytics/react';
 import Nav from './nav';
 import { Suspense } from 'react';
+import AuthProvider from './AuthProvider';
 
 export const metadata = {
   title: 'Next.js 13 + PlanetScale + NextAuth + Tailwind CSS',
@@ -16,14 +17,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full bg-gray-50">
-      <body className="h-full">
-        <Suspense>
-          <Nav />
-        </Suspense>
-        {children}
-        <Analytics />
-      </body>
-    </html>
+    <AuthProvider>
+      <html lang="en" className="h-full bg-gray-50">
+        <body className="h-full">
+          <Suspense>
+            <Nav />
+          </Suspense>
+          {children}
+          <Analytics />
+        </body>
+      </html>
+    </AuthProvider>
   );
 }
