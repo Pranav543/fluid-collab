@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Text, TextInput, Button, Flex, NumberInput } from '@tremor/react';
+import { Text, Button, Flex, NumberInput } from '@tremor/react';
 import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
 
 interface User {
@@ -12,12 +12,12 @@ interface User {
 
 interface Tier {
   name: string;
-  description: string;
+  benefits: string[]; // Changed from 'description'
   amount: string;
 }
 
 export default function UserForm({ users }: { users: User[] }) {
-  const initialTier: Tier = { name: '', description: '', amount: '' };
+  const initialTier: Tier = { name: '', benefits: [], amount: '' };
 
   const [bio, setBio] = useState('');
   const [accountAddress, setAccountAddress] = useState('');
@@ -36,7 +36,7 @@ export default function UserForm({ users }: { users: User[] }) {
   const handleTierChange = (
     index: number,
     field: keyof Tier,
-    value: string
+    value: string | string[]
   ) => {
     const updatedTiers = tiers.map((tier, i) => {
       if (i === index) {
@@ -56,16 +56,39 @@ export default function UserForm({ users }: { users: User[] }) {
     setTiers(updatedTiers);
   };
 
+  const handleBenefitKeyPress = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const benefit = event.currentTarget.value.trim();
+      if (benefit) {
+        const updatedBenefits = [...tiers[index].benefits, benefit];
+        handleTierChange(index, 'benefits', updatedBenefits);
+        event.currentTarget.value = ''; // Clear the input
+      }
+    }
+  };
+
+  const handleRemoveBenefit = (index: number, benefitIndex: number) => {
+    const updatedBenefits = tiers[index].benefits.filter((_, i) => i !== benefitIndex);
+    handleTierChange(index, 'benefits', updatedBenefits);
+  };
+
   const handleViewMoreClick = () => {
     // Implement the logic for viewing more here
   };
+
+  console.log("tiers: ", tiers)
 
   return (
     <div>
       <div className="mb-6">
         <Text>Bio</Text>
-        <TextInput
+        <input
           type="text"
+          className="border rounded p-2 w-full"
           placeholder="bio"
           value={bio}
           onChange={handleBioChange}
@@ -73,8 +96,9 @@ export default function UserForm({ users }: { users: User[] }) {
       </div>
       <div className="mb-6">
         <Text>Account Address (Where the money will be streamed)</Text>
-        <TextInput
+        <input
           type="text"
+          className="border rounded p-2 w-full"
           placeholder="address"
           value={accountAddress}
           onChange={handleAccountAddressChange}
@@ -94,23 +118,27 @@ export default function UserForm({ users }: { users: User[] }) {
             </Button>
           </Flex>
           <div className="mt-2">
-            <TextInput
+            <div className="flex flex-wrap gap-2">
+              {tier.benefits.map((benefit, benefitIndex) => (
+                <span
+                  key={benefitIndex}
+                  className="border border-gray-400 bg-gray-100 rounded p-1 px-2 flex items-center"
+                >
+                  {benefit}
+                  <button
+                    className="ml-2 text-red-500"
+                    onClick={() => handleRemoveBenefit(index, benefitIndex)}
+                  >
+                    X
+                  </button>
+                </span>
+              ))}
+            </div>
+            <input
               type="text"
-              placeholder="Name"
-              value={tier.name}
-              onChange={(event) =>
-                handleTierChange(index, 'name', event.target.value)
-              }
-            />
-          </div>
-          <div className="mt-2">
-            <TextInput
-              type="text"
-              placeholder="Description"
-              value={tier.description}
-              onChange={(event) =>
-                handleTierChange(index, 'description', event.target.value)
-              }
+              className="border rounded p-2 w-full mt-2"
+              placeholder="Add Benefit and press Enter..."
+              onKeyDown={(event) => handleBenefitKeyPress(event, index)}
             />
           </div>
           <div className="mt-2">
@@ -128,7 +156,7 @@ export default function UserForm({ users }: { users: User[] }) {
       ))}
 
       <Flex justifyContent="end" className="space-x-2 pt-4 mt-8">
-        <Button size="xs" variant="secondary" onClick={addTier}>
+        <Button size="xs" variant="secondary" onClick={addTier} disabled={tiers.length >= 3}>
           Add Tier
         </Button>
       </Flex>

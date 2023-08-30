@@ -65,12 +65,12 @@ model Follows {
 }
 
 model Tier {
-  id          String @id @default(cuid())
-  name        String
-  description String
-  amount      Float
+  id       String   @id @default(cuid())
+  name     String
+  benifits String[]
+  amount   Float
 
-  user        User[] @relation("tiers")
+  user User[] @relation("tiers")
 }
 
 model VerificationToken {

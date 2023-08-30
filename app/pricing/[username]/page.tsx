@@ -57,13 +57,7 @@ export default async function PricingPage({params} : Props) {
             {/* <Link href="/login" className={cn(buttonVariants({ size: "lg" }))}>
             Get Started
           </Link> */}
-            <button
-              className="contents underline text-blue-600"
-              onClick={() => {
-              }}
-            >
-              Dismiss →
-            </button>
+            
           </div>
         </div>
         <div className="mx-auto flex w-full max-w-[58rem] flex-col gap-4">
