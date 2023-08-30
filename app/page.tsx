@@ -1,57 +1,31 @@
-import { Card, Title, Text } from '@tremor/react';
-import Search from './search';
+import { Card, Title, Text, TextInput, Flex, Button } from '@tremor/react';
 import UsersTable from './table';
+import UserForm from './form';
+import { prisma } from '@/lib/prisma';
 
-export const dynamic = 'force-dynamic';
+export default async function IndexPage() {
 
-export default async function IndexPage({
-  searchParams
-}: {
-  searchParams: { q: string };
-}) {
-  const search = searchParams.q ?? '';
-  const users = [
-    {
-      id: 1,
-      name: 'pranav',
-      username: 'pranav',
-      email: 'pranavnaik543@getMaxListeners.com'
-    },
-    {
-      id: 2,
-      name: 'John Doe',
-      username: 'john_doe',
-      email: 'john.doe@example.com'
-    },
-    {
-      id: 3,
-      name: 'Jane Smith',
-      username: 'jane_smith',
-      email: 'jane.smith@example.com'
-    },
-    {
-      id: 4,
-      name: 'Alice Johnson',
-      username: 'alice_johnson',
-      email: 'alice.johnson@example.com'
-    },
-    {
-      id: 5,
-      name: 'Bob Williams',
-      username: 'bob_williams',
-      email: 'bob.williams@example.com'
-    }
-  ];
+  const users = await prisma.user.findMany();
+  // Extract only the required properties from each user object
+  const filteredUsers = users.map((user) => ({
+    id: user.id,
+    email: user.email || "",
+    name: user.name || "",
+    image: user.image || ""
+  }));
 
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
-      <Title>Users</Title>
+      <Title>Create Your Own Subscription Checkout</Title>
+      <Card className="mt-6">
+        <UserForm users={filteredUsers} />
+      </Card>
+
       <Text>
         A list of users retrieved from a MySQL database (PlanetScale).
       </Text>
-      <Search />
       <Card className="mt-6">
-        <UsersTable users={users} />
+        <UsersTable users={filteredUsers} />
       </Card>
     </main>
   );

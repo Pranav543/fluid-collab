@@ -12,19 +12,19 @@ datasource db {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
+  id                       String  @id @default(cuid())
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String? @db.Text
+  access_token             String? @db.Text
+  expires_at               Int?
   refresh_token_expires_in Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -44,21 +44,33 @@ model User {
   name           String?   @unique
   email          String?   @unique
   image          String?
-  emailVerified DateTime?
-  accounts      Account[]
-  sessions      Session[]
+  emailVerified  DateTime?
+  bio            String?
+  accounts       Account[]
+  sessions       Session[]
   accountAddress String?
-  followedBy    Follows[] @relation("following")
-  following     Follows[] @relation("follower")
+  followedBy     Follows[] @relation("following")
+  following      Follows[] @relation("follower")
+  hasCheckout    Boolean   @default(false)
+  tiers          Tier[]    @relation("tiers")
 }
 
 model Follows {
-  follower    User @relation("follower", fields: [followerId], references: [id])
+  follower    User   @relation("follower", fields: [followerId], references: [id])
   followerId  String
-  following   User @relation("following", fields: [followingId], references: [id])
+  following   User   @relation("following", fields: [followingId], references: [id])
   followingId String
 
   @@id([followerId, followingId])
+}
+
+model Tier {
+  id          String @id @default(cuid())
+  name        String
+  description String
+  amount      Float
+
+  user        User[] @relation("tiers")
 }
 
 model VerificationToken {
