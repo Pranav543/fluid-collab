@@ -97,8 +97,6 @@ export default function UserForm({ user }: { user: User }) {
 
       if (response.ok) {
         const updatedUser = await response.json();
-        console.log('Updated user:', updatedUser);
-
         // Handle any further actions or notifications here
       } else {
         console.error('Error updating user');
