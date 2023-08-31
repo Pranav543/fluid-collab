@@ -2,7 +2,13 @@
 import React, { useState } from 'react';
 import { Text, Button, Flex, NumberInput } from '@tremor/react';
 import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
-import { prisma } from '@/lib/prisma';
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useEnsAvatar,
+  useEnsName,
+} from 'wagmi'
 
 interface User {
   id: string;
@@ -18,6 +24,8 @@ interface Tier {
 }
 
 export default function UserForm({ user }: { user: User }) {
+  const { address, connector, isConnected } = useAccount()
+  console.log("address: ", address)
   const initialTier: Tier = { name: '', benefits: [], amount: '' };
 
   const [bio, setBio] = useState('');

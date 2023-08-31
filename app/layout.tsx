@@ -1,5 +1,7 @@
 import './globals.css';
 
+import '@rainbow-me/rainbowkit/styles.css';
+import { Providers } from './providers';
 import { Analytics } from '@vercel/analytics/react';
 import Nav from './nav';
 import { Suspense } from 'react';
@@ -20,11 +22,13 @@ export default async function RootLayout({
     <AuthProvider>
       <html lang="en" className="h-full bg-gray-50">
         <body className="h-full">
-          <Suspense>
-            <Nav />
-          </Suspense>
-          {children}
-          <Analytics />
+          <Providers>
+            <Suspense>
+              <Nav />
+            </Suspense>
+            {children}
+            <Analytics />
+          </Providers>
         </body>
       </html>
     </AuthProvider>
