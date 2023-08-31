@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.1",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@next-auth/prisma-adapter": "^1.0.7",

@@ -4,6 +4,8 @@ import UserForm from './form';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth';
+import { gql } from '@apollo/client';
+import client from '@/lib/apollo-client';
 
 export default async function IndexPage() {
   const users = await prisma.user.findMany();
@@ -20,7 +22,31 @@ export default async function IndexPage() {
     (usr) => usr.name === session?.user?.name
   );
 
-  
+  const { data } = await client.query({
+    query: gql`
+      query MyQuery {
+        streams(
+          where: {
+            receiver: "0x6528fa8c77a99d0ca68178e982aefa44b664f19f"
+            token: "0x42bb40bf79730451b11f6de1cba222f17b87afd7"
+          }
+        ) {
+          currentFlowRate
+          token {
+            symbol
+          }
+          sender {
+            id
+          }
+          receiver {
+            id
+          }
+        }
+      }
+    `
+  });
+
+  console.log(data);
 
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
