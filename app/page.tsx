@@ -1,5 +1,4 @@
 import { Card, Title, Text, TextInput, Flex, Button } from '@tremor/react';
-import UsersTable from './table';
 import UserForm from './form';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
@@ -28,7 +27,6 @@ export default async function IndexPage() {
         streams(
           where: {
             receiver: "0x6528fa8c77a99d0ca68178e982aefa44b664f19f"
-            token: "0x42bb40bf79730451b11f6de1cba222f17b87afd7"
           }
         ) {
           currentFlowRate
@@ -55,12 +53,6 @@ export default async function IndexPage() {
           <Title>Create Your Own Subscription Checkout</Title>
           <Card className="mt-6">
             <UserForm user={currentUser[0]} />
-          </Card>
-          <Text>
-            A list of users retrieved from a MySQL database (PlanetScale).
-          </Text>
-          <Card className="mt-6">
-            <UsersTable users={filteredUsers} />
           </Card>
         </>
       ) : (
