@@ -4,24 +4,26 @@ import * as React from 'react';
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { polygonMumbai } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
+import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { polygonMumbai } from 'wagmi/chains';
 
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [polygonMumbai],
-  [publicProvider()]
+  [alchemyProvider({ apiKey: 'Qn9nywHADxq4Xiif5pW8nmbkhmLzGEtC' }), publicProvider()]
 );
+
+const walletConnectProjectId = "72dc5cd398f7ea6d81b62dd8704793d2";
 
 const appInfo = {
   appName: 'Fluid Checkout'
 };
 
 const { connectors } = getDefaultWallets({
-    appName: 'RainbowKit App',
+    appName: 'Fluid Checkout',
     chains,
-    projectId: "72dc5cd398f7ea6d81b62dd8704793d2"
+    projectId: walletConnectProjectId
   });
 
 // Set up wagmi config

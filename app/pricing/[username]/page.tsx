@@ -1,6 +1,5 @@
+import CheckoutButton from '@/app/CheckoutButton';
 import { prisma } from '@/lib/prisma';
-import { CheckIcon } from '@heroicons/react/24/outline';
-import { Button } from '@tremor/react';
 import { Metadata } from 'next';
 
 interface Props {
@@ -73,7 +72,7 @@ export default async function PricingPage({ params }: Props) {
                   </li>
                 ))}
               </ul>
-              <Button variant='primary' color='lime'>Subscribe 🚀</Button>
+              <CheckoutButton user={user} subscriptionAmount={tier.amount}/>
             </div>
           ))}
         </div>
