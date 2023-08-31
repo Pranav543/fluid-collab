@@ -52,7 +52,7 @@ model User {
   followedBy     Follows[] @relation("following")
   following      Follows[] @relation("follower")
   hasCheckout    Boolean   @default(false)
-  tiers          Tier[]    @relation("tiers")
+  tiers          Json?
 }
 
 model Follows {
@@ -62,15 +62,6 @@ model Follows {
   followingId String
 
   @@id([followerId, followingId])
-}
-
-model Tier {
-  id       String   @id @default(cuid())
-  name     String
-  benifits String[]
-  amount   Float
-
-  user User[] @relation("tiers")
 }
 
 model VerificationToken {

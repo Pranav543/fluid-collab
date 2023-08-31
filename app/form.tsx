@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Text, Button, Flex, NumberInput } from '@tremor/react';
 import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { prisma } from '@/lib/prisma';
 
 interface User {
   id: string;
@@ -16,7 +17,7 @@ interface Tier {
   amount: string;
 }
 
-export default function UserForm({ users }: { users: User[] }) {
+export default function UserForm({ user }: { user: User }) {
   const initialTier: Tier = { name: '', benefits: [], amount: '' };
 
   const [bio, setBio] = useState('');
@@ -72,15 +73,42 @@ export default function UserForm({ users }: { users: User[] }) {
   };
 
   const handleRemoveBenefit = (index: number, benefitIndex: number) => {
-    const updatedBenefits = tiers[index].benefits.filter((_, i) => i !== benefitIndex);
+    const updatedBenefits = tiers[index].benefits.filter(
+      (_, i) => i !== benefitIndex
+    );
     handleTierChange(index, 'benefits', updatedBenefits);
   };
 
-  const handleViewMoreClick = () => {
-    // Implement the logic for viewing more here
-  };
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('/api/user', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: user.id,
+          bio: bio,
+          accountAddress: accountAddress,
+          hasCheckout: true,
+          tiers: tiers
+        })
+      });
 
-  console.log("tiers: ", tiers)
+      if (response.ok) {
+        const updatedUser = await response.json();
+        console.log('Updated user:', updatedUser);
+
+        // Handle any further actions or notifications here
+      } else {
+        console.error('Error updating user');
+        // Handle error scenario here
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+      // Handle error scenario here
+    }
+  };
 
   return (
     <div>
@@ -105,8 +133,8 @@ export default function UserForm({ users }: { users: User[] }) {
         />
       </div>
       {tiers.map((tier, index) => (
-        <div key={index} className="mb-6">
-          <Flex justifyContent="between" alignItems="center">
+        <div key={index} className="mb-4">
+          <Flex justifyContent="between" alignItems="center" className="mb-4">
             <Text>{`Tier ${index + 1}`}</Text>
             <Button
               size="xs"
@@ -117,8 +145,25 @@ export default function UserForm({ users }: { users: User[] }) {
               Delete Tier
             </Button>
           </Flex>
-          <div className="mt-2">
-            <div className="flex flex-wrap gap-2">
+          <div className="mb-4">
+            <input
+              type="text"
+              className="border rounded p-2 w-full"
+              placeholder="Name"
+              value={tier.name}
+              onChange={(event) =>
+                handleTierChange(index, 'name', event.target.value)
+              }
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="text"
+              className="border rounded p-2 w-full"
+              placeholder="Add Benefit and press Enter..."
+              onKeyDown={(event) => handleBenefitKeyPress(event, index)}
+            />
+            <div className="flex flex-wrap gap-2 mt-2">
               {tier.benefits.map((benefit, benefitIndex) => (
                 <span
                   key={benefitIndex}
@@ -134,14 +179,8 @@ export default function UserForm({ users }: { users: User[] }) {
                 </span>
               ))}
             </div>
-            <input
-              type="text"
-              className="border rounded p-2 w-full mt-2"
-              placeholder="Add Benefit and press Enter..."
-              onKeyDown={(event) => handleBenefitKeyPress(event, index)}
-            />
           </div>
-          <div className="mt-2">
+          <div>
             <NumberInput
               placeholder="Amount..."
               icon={CurrencyDollarIcon}
@@ -155,13 +194,18 @@ export default function UserForm({ users }: { users: User[] }) {
         </div>
       ))}
 
-      <Flex justifyContent="end" className="space-x-2 pt-4 mt-8">
-        <Button size="xs" variant="secondary" onClick={addTier} disabled={tiers.length >= 3}>
+      <Flex justifyContent="end" className="space-x-2 pt-4 ">
+        <Button
+          size="xs"
+          variant="secondary"
+          onClick={addTier}
+          disabled={tiers.length >= 3}
+        >
           Add Tier
         </Button>
       </Flex>
       <Flex justifyContent="end" className="space-x-2 border-t pt-4 mt-8">
-        <Button size="xs" variant="primary" onClick={handleViewMoreClick}>
+        <Button size="xs" variant="primary" onClick={handleSubmit}>
           Create Checkout
         </Button>
       </Flex>
