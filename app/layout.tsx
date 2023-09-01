@@ -8,9 +8,9 @@ import { Suspense } from 'react';
 import AuthProvider from './AuthProvider';
 
 export const metadata = {
-  title: 'Next.js 13 + PlanetScale + NextAuth + Tailwind CSS',
+  title: 'Fluid Checkout',
   description:
-    'A user admin dashboard configured with Next.js, PlanetScale, NextAuth, Tailwind CSS, TypeScript, ESLint, and Prettier.'
+    'Empowering Creativity: 🌟 Unlock Your Potential with Superfluid Subscription Checkout – Monetize Your Passion, Seamlessly. 💰✨'
 };
 
 export default async function RootLayout({

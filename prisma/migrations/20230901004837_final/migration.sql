@@ -37,7 +37,7 @@ CREATE TABLE "User" (
     "bio" TEXT,
     "accountAddress" TEXT,
     "hasCheckout" BOOLEAN NOT NULL DEFAULT false,
-    "tiers" JSONB NOT NULL,
+    "tiers" JSONB,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

@@ -21,12 +21,19 @@ export default async function IndexPage() {
           {hasCheckout ? (
             <Title>
               Your Super Checkout Page has already been Created{' '}
-              <Link className="text-blue-500 hover:underline" href={`/pricing/${currentUser?.name}`}>here</Link> 💫{' '}
+              <Link
+                className="text-blue-500 hover:underline"
+                href={`/pricing/${currentUser?.name}`}
+              >
+                here
+              </Link>{' '}
+              💫{' '}
             </Title>
           ) : (
             <Title>Create Your Own Super Subscription Checkout 💫</Title>
           )}
           <Card className="mt-6">
+            {/* @ts-ignore */}
             <UserForm user={currentUser} hasCheckout={hasCheckout} />
           </Card>
         </>
