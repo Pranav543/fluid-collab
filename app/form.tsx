@@ -4,10 +4,13 @@ import { Text, Button, Flex, NumberInput } from '@tremor/react';
 import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
 
 interface User {
+  tiers: Tier[];
   id: string;
-  name: string;
-  email: string;
-  image: string;
+  name: string | null;
+  email: string | null;
+  image: string | null;
+  bio: string | null;
+  accountAddress: string | null;
 }
 
 interface Tier {
@@ -16,12 +19,14 @@ interface Tier {
   amount: string;
 }
 
-export default function UserForm({ user }: { user: User }) {
+export default function UserForm({ user, hasCheckout }: { user: User | null, hasCheckout: boolean }) {
   const initialTier: Tier = { name: '', benefits: [], amount: '' };
 
-  const [bio, setBio] = useState('');
-  const [accountAddress, setAccountAddress] = useState('');
-  const [tiers, setTiers] = useState<Tier[]>([initialTier]);
+  const [bio, setBio] = useState(user && user.bio ? user.bio : '');
+  const [accountAddress, setAccountAddress] = useState(user && user.accountAddress ? user.accountAddress : '');
+  console.log("user: ", user)
+  const initialTiers = user && user.tiers ? user.tiers : [initialTier];
+  const [tiers, setTiers] = useState<Tier[]>(initialTiers);
 
   const handleBioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setBio(event.target.value);
@@ -79,31 +84,33 @@ export default function UserForm({ user }: { user: User }) {
   };
 
   const handleSubmit = async () => {
-    try {
-      const response = await fetch('/api/user', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id: user.id,
-          bio: bio,
-          accountAddress: accountAddress,
-          hasCheckout: true,
-          tiers: tiers
-        })
-      });
+    if (user) {
+      try {
+        const response = await fetch('/api/user', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: user.id,
+            bio: bio,
+            accountAddress: accountAddress,
+            hasCheckout: true,
+            tiers: tiers
+          })
+        });
 
-      if (response.ok) {
-        const updatedUser = await response.json();
-        // Handle any further actions or notifications here
-      } else {
-        console.error('Error updating user');
+        if (response.ok) {
+          const updatedUser = await response.json();
+          // Handle any further actions or notifications here
+        } else {
+          console.error('Error updating user');
+          // Handle error scenario here
+        }
+      } catch (error) {
+        console.error('Error updating user:', error);
         // Handle error scenario here
       }
-    } catch (error) {
-      console.error('Error updating user:', error);
-      // Handle error scenario here
     }
   };
 
@@ -203,7 +210,7 @@ export default function UserForm({ user }: { user: User }) {
       </Flex>
       <Flex justifyContent="end" className="space-x-2 border-t pt-4 mt-8">
         <Button size="xs" variant="primary" onClick={handleSubmit}>
-          Create Checkout
+          {hasCheckout ? "Update Checkout" :"Create Checkout"}
         </Button>
       </Flex>
     </div>

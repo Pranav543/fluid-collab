@@ -72,14 +72,18 @@ export default async function PricingPage({ params }: Props) {
                   </li>
                 ))}
               </ul>
-              <CheckoutButton user={user} subscriptionAmount={tier.amount}/>
+              <CheckoutButton user={user} subscriptionAmount={tier.amount} />
             </div>
           ))}
         </div>
 
         <div className="mx-auto flex w-full max-w-[58rem] flex-col gap-4 text-center">
           <p className="max-w-[85%] leading-normal text-muted-foreground sm:leading-7">
-            <strong>Every contribution to an artist is a brushstroke on the canvas of culture. </strong> - Unknown
+            <strong>
+              Every contribution to an artist is a brushstroke on the canvas of
+              culture.
+            </strong>{' '}
+            - Unknown
           </p>
         </div>
       </section>
